@@ -56,32 +56,15 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityRequirement(new OpenApiSecurityRequirement { { securityScheme, new string[] { } } });
 });
 
-// ---- DbContext registration ----
-// Check if we should use SQLite for testing (via environment variable)
-var useSqliteForTesting = Environment.GetEnvironmentVariable("USE_SQLITE_FOR_TESTING")?.ToLower() == "true";
+// ---- DbContext registration (SQL Server) ----
+var defaultConn = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(defaultConn))
+{
+    throw new InvalidOperationException("ConnectionStrings:DefaultConnection not configured. Add it to appsettings.Development.json or set the environment variable ConnectionStrings__DefaultConnection.");
+}
 
-if (useSqliteForTesting)
-{
-    // Use SQLite file-based database for testing/CI environments
-    // File-based is more reliable than in-memory for API testing
-    Console.WriteLine("⚠️  Using SQLite file-based database for TESTING purposes");
-    var dbPath = Path.Combine(Path.GetTempPath(), "xcelerate_test.db");
-    builder.Services.AddDbContext<xcleratesystemslinks_SampleDBContext>(options =>
-        options.UseSqlite($"Data Source={dbPath}"));
-}
-else
-{
-    // Use SQL Server (default production behavior)
-    var defaultConn = builder.Configuration.GetConnectionString("DefaultConnection");
-    if (string.IsNullOrWhiteSpace(defaultConn))
-    {
-        throw new InvalidOperationException("ConnectionStrings:DefaultConnection not configured. Add it to appsettings.Development.json or set the environment variable ConnectionStrings__DefaultConnection.");
-    }
-    
-    Console.WriteLine($"Using SQL Server database (from connection string)");
-    builder.Services.AddDbContext<xcleratesystemslinks_SampleDBContext>(options =>
-        options.UseSqlServer(defaultConn));
-}
+builder.Services.AddDbContext<xcleratesystemslinks_SampleDBContext>(options =>
+    options.UseSqlServer(defaultConn));
 
 // ---- JWT key ----
 var keyBase64 = Environment.GetEnvironmentVariable("XCELERATE_JWT_KEY")
@@ -150,67 +133,6 @@ builder.Services.AddAuthentication(options =>
 
 // ---- Build pipeline ----
 var app = builder.Build();
-
-// ---- Initialize SQLite database if in testing mode ----
-if (useSqliteForTesting)
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<xcleratesystemslinks_SampleDBContext>();
-        var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        
-        try
-        {
-            // Ensure database is created
-            dbContext.Database.EnsureCreated();
-            logger.LogInformation("SQLite database created/opened");
-            
-            // Seed with test users if no users exist
-            if (!dbContext.Users.Any())
-            {
-                logger.LogInformation("Seeding test data...");
-                
-                var testUser = new User
-                {
-                    Name = "Test User",
-                    Email = "test@example.com",
-                    PhoneNumber = "1234567890",
-                    Nationality = 1,  // int value
-                    JobPreference = 1,  // int value
-                    ProfileBio = "Test user for development",
-                    DoB = DateOnly.FromDateTime(new DateTime(1990, 1, 1)),
-                    Role = 1  // int value (JobSeeker role)
-                };
-                testUser.PasswordHash = passwordHasher.HashPassword(testUser, "test");
-                
-                var adminUser = new User
-                {
-                    Name = "Admin User",
-                    Email = "admin@example.com",
-                    PhoneNumber = "9876543210",
-                    Nationality = 1,  // int value
-                    JobPreference = 2,  // int value
-                    ProfileBio = "Admin user",
-                    DoB = DateOnly.FromDateTime(new DateTime(1985, 1, 1)),
-                    Role = 2  // int value (Admin role)
-                };
-                adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "admin");
-                
-                dbContext.Users.AddRange(testUser, adminUser);
-                dbContext.SaveChanges();
-                
-                logger.LogInformation("✅ Test users created:");
-                logger.LogInformation("   📧 test@example.com / password: test");
-                logger.LogInformation("   📧 admin@example.com / password: admin");
-            }
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error initializing SQLite database");
-        }
-    }
-}
 
 if (app.Environment.IsDevelopment())
 {
