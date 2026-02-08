@@ -11,9 +11,10 @@ using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
 // Ensure Kestrel binds to both HTTP & HTTPS dev URLs even if a different launch profile is chosen.
-// You can still override by setting ASPNETCORE_URLS externally.
+// Prefer configuration/ASPNETCORE_URLS when present so ports stay in sync with launch settings.
 var defaultUrls = "https://localhost:7263;http://localhost:5270";
-var urls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ?? defaultUrls;
+var configuredUrls = builder.Configuration["Hosting:Urls"];
+var urls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ?? configuredUrls ?? defaultUrls;
 builder.WebHost.UseUrls(urls);
 
 // ---- CORS policy ----
