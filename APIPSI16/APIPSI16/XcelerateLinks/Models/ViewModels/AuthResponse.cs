@@ -1,8 +1,13 @@
-﻿namespace XcelerateLinks.Models.ViewModels
+﻿using System.Text.Json.Serialization;
+
+namespace XcelerateLinks.Models.ViewModels
 {
     public class AuthResponse
     {
-            public string Token { get; set; } = "";
-            public DateTime ExpiresAt { get; set; }
+        [JsonPropertyName("token")]
+        public string Token { get; set; } = "";
+        
+        [JsonPropertyName("expiresAt")]
+        public DateTime ExpiresAt { get; set; }
     }
 }

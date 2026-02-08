@@ -15,9 +15,8 @@ builder.Services.AddHttpContextAccessor();
 // Register TokenHandler (delegating handler that attaches JWT from cookie)
 builder.Services.AddTransient<TokenHandler>();
 
-// Read API base URL from configuration and validate early
-var apiBase = builder.Configuration["Api:BaseUrl"]
-              ?? throw new InvalidOperationException("Api:BaseUrl not configured in appsettings.json");
+// Read API base URL from configuration with safe default
+var apiBase = builder.Configuration["Api:BaseUrl"] ?? "http://localhost:5270";
 
 // Ensure base ends with slash for relative URIs usage
 if (!apiBase.EndsWith('/')) apiBase += '/';
@@ -46,6 +45,7 @@ builder.Services.AddHttpClient("Api", client =>
     client.BaseAddress = new Uri(apiBase);
     client.DefaultRequestHeaders.Accept.Clear();
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    client.Timeout = TimeSpan.FromSeconds(30);
 })
 .ConfigurePrimaryHttpMessageHandler(CreatePrimaryHandler);
 

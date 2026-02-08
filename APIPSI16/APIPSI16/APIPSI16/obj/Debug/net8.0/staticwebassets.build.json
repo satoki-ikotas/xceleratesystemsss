@@ -1,12 +1,1 @@
-{
-  "Version": 1,
-  "Hash": "W8fITSjJuruQ6GL52vG2JS1KGcZ/d9cIEFYNLOZcO4g=",
-  "Source": "APIPSI16",
-  "BasePath": "_content/APIPSI16",
-  "Mode": "Default",
-  "ManifestType": "Build",
-  "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
-}
+{"Version":1,"Hash":"OkB5ljk5gaSlMKSfzc6N5egKMk1qck3x7IWjjvcZtDM=","Source":"APIPSI16","BasePath":"/","Mode":"Root","ManifestType":"Build","ReferencedProjectsConfiguration":[],"DiscoveryPatterns":[],"Assets":[],"Endpoints":[]}
