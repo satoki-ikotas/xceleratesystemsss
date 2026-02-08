@@ -98,9 +98,9 @@ namespace APIPSI16.Controllers
 
             var claims = new[]
             {
-        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, user.Name ?? user.Email ?? string.Empty),
-        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, user.UserId.ToString()),
-    };
+                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, user.Name ?? user.Email ?? string.Empty),
+                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            };
 
             var token = _tokenService.CreateToken(user.UserId.ToString(), claims);
             var expires = _tokenService.GetLastExpiry();
@@ -186,9 +186,9 @@ namespace APIPSI16.Controllers
                 // Create a minimal claims set for testing
                 var claims = new[]
                 {
-            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, "debug"),
-            new System.Security.Claims.Claim("userid", "9999")
-        };
+                    new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, "debug"),
+                    new System.Security.Claims.Claim("userid", "9999")
+                };
 
                 var token = _tokenService.CreateToken("9999", claims);
                 var expires = _tokenService.GetLastExpiry();
