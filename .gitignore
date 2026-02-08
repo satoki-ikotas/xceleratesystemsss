@@ -64,3 +64,6 @@ artifacts/
 # Windows thumbnail cache
 Thumbs.db
 ehthumbs.db
+*.db
+*.db-shm
+*.db-wal

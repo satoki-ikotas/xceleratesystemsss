@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("XcelerateLinks")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8a32689e9a1f77de73fdb9b4b12484a72f97979f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c351f9c57ea53225d931326df09889b833a9f046")]
 [assembly: System.Reflection.AssemblyProductAttribute("XcelerateLinks")]
 [assembly: System.Reflection.AssemblyTitleAttribute("XcelerateLinks")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
