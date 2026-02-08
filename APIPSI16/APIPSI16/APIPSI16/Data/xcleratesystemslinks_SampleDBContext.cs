@@ -39,8 +39,14 @@ public partial class xcleratesystemslinks_SampleDBContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        // Only configure if not already configured (i.e., when DI hasn't set it)
+        if (!optionsBuilder.IsConfigured)
+        {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=sql.bsite.net\\MSSQL2016;Initial Catalog=xcleratesystemslinks_SampleDB;Persist Security Info=True;User ID=xcleratesystemslinks_SampleDB;Password=XcelerateDB;Encrypt=False");
+            optionsBuilder.UseSqlServer("Data Source=sql.bsite.net\\MSSQL2016;Initial Catalog=xcleratesystemslinks_SampleDB;Persist Security Info=True;User ID=xcleratesystemslinks_SampleDB;Password=XcelerateDB;Encrypt=False");
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
